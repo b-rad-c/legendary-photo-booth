@@ -3,6 +3,8 @@
 # This example is essentially the same as app_capture.py, however here
 # we use the Qt signal/slot mechanism to get a callback (finish_picture_capture)
 # when the capture, that is running asynchronously, is finished.
+import os
+import datetime
 from pathlib import Path
 
 from PyQt5 import QtCore
@@ -19,21 +21,22 @@ from PyQt5.QtWidgets import (
 from picamera2 import Picamera2
 from picamera2.previews.qt import QGlPicamera2
 
-script_dir = Path(__file__).parent.parent
+# change this to change where photos are saved
+photo_dump = Path('/home/olmec/Desktop')
 
 #
 # picam
 #
 
 picam2 = Picamera2()
-picam2.configure(picam2.create_preview_configuration(main={"size": (800, 600)}))
+picam2.configure(picam2.create_preview_configuration(main={"size": (1200, 900)}))
 
 #
 # init gui app
 #
 
 app = QApplication([])
-qpicamera2 = QGlPicamera2(picam2, width=800, height=600, keep_ar=False)
+qpicamera2 = QGlPicamera2(picam2, width=1200, height=900, keep_ar=False)
 window = QWidget()
 
 #
@@ -45,7 +48,11 @@ def start_picture_capture():
     global n
     button.setEnabled(False)
     cfg = picam2.create_still_configuration()
-    photo_path = script_dir / f"legends-{n}.jpg"
+
+    # change this to change how the folders and names are created for saved pics
+    photo_path = photo_dump / datetime.datetime.now().strftime('%Y-%b-%d-%a/%H-%M-%f.jpg')
+    os.makedirs(photo_path.parent, exist_ok=True)
+
     picam2.switch_mode_and_capture_file(cfg, photo_path, signal_function=qpicamera2.signal_done, delay=30)
 
 def finish_picture_capture(job):
@@ -79,7 +86,7 @@ layout_h.addWidget(qpicamera2, 80)
 layout_h.addLayout(layout_v, 20)
 
 window.setWindowTitle("Legendary Selfie")
-window.resize(1200, 600)
+window.resize(1800, 900)
 window.setLayout(layout_h)
 
 picam2.start()
