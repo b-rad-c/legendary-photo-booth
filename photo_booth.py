@@ -8,14 +8,10 @@ import time
 import datetime
 from pathlib import Path
 
-from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QApplication,
     QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
     QWidget
 )
 

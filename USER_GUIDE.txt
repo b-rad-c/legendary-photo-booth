@@ -1,0 +1,21 @@
+Legendary Photobooth User Guide
+
+To set up:
+    * plug in monitor hdmi to raspberry pi 
+    * plug in monitor's usb power (the monitor does have a battery, but it may not last long)
+    * plug in big red button to raspberry pi (usb)
+    * plug in power to raspberry pi (usb c)
+        * After plugging in the power the computer will boot up and automatically open the photo booth app
+
+To take selfie:
+    * after following setup instructions and the camera preview is showing on screen, press the big red button
+
+To shutdown or restart:
+    * plug in mouse
+    * click to close photo booth window
+    * click the raspberry button in the top left
+        * click logout
+            * click shutdown or restart
+
+View photos:
+    * photos are stored in folders by date on the desktop
