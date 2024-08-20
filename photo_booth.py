@@ -4,6 +4,7 @@
 # we use the Qt signal/slot mechanism to get a callback (finish_picture_capture)
 # when the capture, that is running asynchronously, is finished.
 import os
+import time
 import datetime
 from pathlib import Path
 
@@ -21,6 +22,8 @@ from PyQt5.QtWidgets import (
 from picamera2 import Picamera2
 from picamera2.previews.qt import QGlPicamera2
 
+from libcamera import Transform
+
 #
 # config
 #
@@ -30,14 +33,21 @@ pic_height = 900
 window_width = 1920
 window_height = 1010
 photo_dump = Path('/home/olmec/Desktop')
+transform = Transform(hflip=False, vflip=False)
 
 #
 # picam
 #
 
 picam2 = Picamera2()
-still_cfg = picam2.create_still_configuration()
-preview_cfg = picam2.create_preview_configuration(main={'size': (pic_width, pic_height)})
+still_cfg = picam2.create_still_configuration(
+    main={'size': (pic_width, pic_height)},
+    transform=transform
+)
+preview_cfg = picam2.create_preview_configuration(
+    main={'size': (pic_width, pic_height)},
+    transform=transform
+)
 picam2.configure(preview_cfg)
 
 
@@ -58,9 +68,10 @@ def start_picture_capture():
     photo_path = photo_dump / datetime.datetime.now().strftime('%Y-%b-%d-%a/%H-%M-%f.jpg')
     os.makedirs(photo_path.parent, exist_ok=True)
 
-    picam2.switch_mode_and_capture_file(still_cfg, photo_path, signal_function=qpicamera2.signal_done, delay=30)
+    picam2.switch_mode_and_capture_file(still_cfg, photo_path, signal_function=qpicamera2.signal_done, wait=False, delay=0)
 
 def finish_picture_capture(job):
+    time.sleep(5)
     picam2.wait(job)
     
 def keyboard_handler(e):
