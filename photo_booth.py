@@ -27,8 +27,8 @@ from picamera2.previews.qt import QGlPicamera2
 
 pic_width = 1200
 pic_height = 900
-window_width = 1800
-window_height = 900
+window_width = 1920
+window_height = 1010
 photo_dump = Path('/home/olmec/Desktop')
 
 #
@@ -46,7 +46,7 @@ picam2.configure(preview_cfg)
 #
 
 app = QApplication([])
-qpicamera2 = QGlPicamera2(picam2, width=pic_width, height=pic_height, keep_ar=False)
+qpicamera2 = QGlPicamera2(picam2, width=pic_width, height=pic_height, keep_ar=True)
 window = QWidget()
 
 #
@@ -54,8 +54,6 @@ window = QWidget()
 #
 
 def start_picture_capture():
-    button.setEnabled(False)
-
     # change this to change how the folders and names are created for saved pics
     photo_path = photo_dump / datetime.datetime.now().strftime('%Y-%b-%d-%a/%H-%M-%f.jpg')
     os.makedirs(photo_path.parent, exist_ok=True)
@@ -64,7 +62,6 @@ def start_picture_capture():
 
 def finish_picture_capture(job):
     picam2.wait(job)
-    button.setEnabled(True)
     
 def keyboard_handler(e):
     if e.key() == Qt.Key_Q:
@@ -80,15 +77,8 @@ def keyboard_handler(e):
 qpicamera2.done_signal.connect(finish_picture_capture)
 window.keyPressEvent = keyboard_handler
 
-button = QPushButton('Click to capture JPEG')
-button.clicked.connect(start_picture_capture)
-
-layout_v = QVBoxLayout()
-layout_v.addWidget(button)
-
 layout_h = QHBoxLayout()
 layout_h.addWidget(qpicamera2, 80)
-layout_h.addLayout(layout_v, 20)
 
 window.setWindowTitle('Legendary Selfie')
 window.resize(window_width, window_height)
